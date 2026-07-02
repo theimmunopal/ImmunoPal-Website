@@ -1,0 +1,255 @@
+import { useState, FormEvent } from 'react';
+import { motion } from 'motion/react';
+import {
+  Mail,
+  MessageSquare,
+  Clock,
+  Send,
+  Check,
+  ShoppingBag,
+  ExternalLink,
+  Instagram,
+  Facebook,
+} from 'lucide-react';
+
+export default function ContactView() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('Product Question');
+  const [message, setMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (name.trim() && email.trim() && message.trim()) {
+      setSubmitted(true);
+      setName('');
+      setEmail('');
+      setMessage('');
+    }
+  };
+
+  return (
+    <div id="contact-view-container" className="pt-24 pb-20">
+      {/* 1. Header */}
+      <section className="py-16 md:py-24 hero-gradient text-center">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#3AA76D]/10 text-[#3AA76D] mb-6">
+            <Mail className="w-4 h-4 text-emerald" />
+            <span className="font-sans font-extrabold text-[11px] uppercase tracking-wide">
+              Customer Support
+            </span>
+          </div>
+          <h1 className="font-sans font-extrabold text-5xl sm:text-7xl lg:text-8xl text-navy tracking-tighter leading-[0.9] mb-6">
+            We'd Love to <br />
+            <span className="text-emerald">Hear From You</span>
+          </h1>
+          <p className="font-sans text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            Have questions about your order, ingredients sourcing, or want to share feedback about your ImmunoPal routine? Our dedicated support team is ready to assist you.
+          </p>
+        </div>
+      </section>
+
+      {/* 2. Main Grid */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left Column: Contact Cards & Info (lg:col-span-5) */}
+          <div className="lg:col-span-5 flex flex-col gap-6 text-left">
+            <h3 className="font-sans font-extrabold text-sm uppercase tracking-wider text-navy/40 mb-2">
+              Support Directory
+            </h3>
+
+            {/* Support Email Card */}
+            <div className="border border-white bg-[#F7F9FC] p-8 rounded-[28px] shadow-soft hover:border-emerald-200 transition-colors duration-300 flex items-start gap-4 group">
+              <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                <Mail className="w-5 h-5 text-sky" />
+              </div>
+              <div>
+                <h4 className="font-sans font-extrabold text-base text-navy leading-none">
+                  Email Support
+                </h4>
+                <a
+                  href="mailto:support@immunopal.com"
+                  className="font-sans text-xs sm:text-sm text-emerald font-extrabold block mt-2 hover:underline"
+                >
+                  support@immunopal.com
+                </a>
+                <span className="font-sans text-[10px] text-navy/40 block mt-1 leading-normal">
+                  Typically responds within 24 business hours.
+                </span>
+              </div>
+            </div>
+
+            {/* Support Hours Card */}
+            <div className="border border-white bg-[#F7F9FC] p-8 rounded-[28px] shadow-soft hover:border-emerald-200 transition-colors duration-300 flex items-start gap-4 group">
+              <div className="w-10 h-10 rounded-xl bg-emerald flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-sans font-extrabold text-base text-navy leading-none">
+                  Response Hours
+                </h4>
+                <p className="font-sans text-xs text-slate-500 mt-2 leading-relaxed font-bold">
+                  Monday – Friday <br />
+                  9:00 AM – 5:00 PM EST
+                </p>
+                <span className="font-sans text-[10px] text-navy/40 block mt-1 leading-normal">
+                  Excludes federal and national holidays.
+                </span>
+              </div>
+            </div>
+
+            {/* Amazon Storefront Connection Card */}
+            <div className="bg-gradient-to-tr from-navy to-navy-dark rounded-[28px] p-8 text-white relative overflow-hidden flex flex-col gap-4 shadow-soft">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-sky/5 rounded-full blur-2xl" />
+              <div className="relative z-10">
+                <h4 className="font-sans font-extrabold text-lg mb-2">Sells Exclusively on Amazon</h4>
+                <p className="font-sans text-xs text-white/70 leading-relaxed mb-4">
+                  For Prime deliveries, shipping logistics tracking, or subscription discounts, visit our official Amazon storefront directly.
+                </p>
+                <a
+                  href="https://www.amazon.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#3AA76D] hover:bg-emerald-light text-white font-sans font-extrabold text-xs uppercase tracking-wider py-4 px-6 rounded-[20px] shadow-md transition-colors"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Go to Amazon Store</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-white/80" />
+                </a>
+              </div>
+            </div>
+
+            {/* Social Connection */}
+            <div className="flex items-center gap-4 mt-2">
+              <span className="font-sans font-extrabold text-xs text-navy/50 uppercase tracking-wider">Follow our community</span>
+              <div className="flex gap-2">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-navy/10 flex items-center justify-center text-navy/60 hover:text-emerald hover:border-emerald transition-all"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-navy/10 flex items-center justify-center text-navy/60 hover:text-emerald hover:border-emerald transition-all"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Contact Form (lg:col-span-7) */}
+          <div className="lg:col-span-7 bg-[#F7F9FC] rounded-[28px] p-6 sm:p-8 border border-white text-left shadow-soft">
+            {submitted ? (
+              <div className="text-center py-16 animate-scale-in">
+                <div className="w-16 h-16 bg-emerald/10 text-emerald rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Check className="w-8 h-8" />
+                </div>
+                <h2 className="font-sans font-extrabold text-3xl text-navy mb-2">Message Sent with Care</h2>
+                <p className="font-sans text-sm text-slate-500 max-w-sm mx-auto leading-relaxed mb-8">
+                  Thank you for reaching out to ImmunoPal! We have successfully received your inquiry and a support representative will respond shortly.
+                </p>
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className="bg-[#123A63] hover:bg-opacity-95 text-white font-sans font-extrabold text-sm px-6 py-4 rounded-[20px] shadow-md transition-all cursor-pointer"
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <div className="flex items-center gap-2 border-b border-navy/10 pb-4 mb-2">
+                  <MessageSquare className="w-5 h-5 text-emerald" />
+                  <span className="font-sans font-extrabold text-sm text-navy uppercase tracking-wide">Send us a direct message</span>
+                </div>
+
+                {/* Name */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="form-name" className="font-sans font-extrabold text-xs text-navy/60 uppercase">
+                    Your Name
+                  </label>
+                  <input
+                    id="form-name"
+                    type="text"
+                    required
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-4 rounded-[20px] bg-white border border-navy/10 font-sans text-xs focus:outline-none focus:border-emerald/40 transition-colors shadow-sm"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="form-email" className="font-sans font-extrabold text-xs text-navy/60 uppercase">
+                    Email Address
+                  </label>
+                  <input
+                    id="form-email"
+                    type="email"
+                    required
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-4 rounded-[20px] bg-white border border-navy/10 font-sans text-xs focus:outline-none focus:border-emerald/40 transition-colors shadow-sm"
+                  />
+                </div>
+
+                {/* Subject dropdown */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="form-subject" className="font-sans font-extrabold text-xs text-navy/60 uppercase">
+                    Subject / Topic
+                  </label>
+                  <select
+                    id="form-subject"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full px-4 py-4 rounded-[20px] bg-white border border-navy/10 font-sans text-xs focus:outline-none focus:border-emerald/40 transition-colors shadow-sm text-navy/80"
+                  >
+                    <option value="Product Question">Product Information & Sourcing</option>
+                    <option value="Amazon Order Support">Amazon Order Logistics</option>
+                    <option value="Feedback / Suggestions">Feedback & Reviews</option>
+                    <option value="Partnership / Wholesaling">General Inquiry</option>
+                  </select>
+                </div>
+
+                {/* Message */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="form-message" className="font-sans font-extrabold text-xs text-navy/60 uppercase">
+                    Your Message
+                  </label>
+                  <textarea
+                    id="form-message"
+                    required
+                    rows={5}
+                    placeholder="Describe how we can support you..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="w-full px-4 py-4 rounded-[20px] bg-white border border-navy/10 font-sans text-xs focus:outline-none focus:border-emerald/40 transition-colors shadow-sm resize-none"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-2 bg-[#123A63] hover:bg-opacity-95 text-white font-sans font-extrabold text-lg py-4 rounded-[20px] shadow-md transition-all duration-300 mt-2 cursor-pointer"
+                >
+                  <Send className="w-5 h-5 text-sky" />
+                  <span>Send Message Now</span>
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

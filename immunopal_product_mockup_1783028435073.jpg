@@ -1,0 +1,330 @@
+import { useState, FormEvent } from 'react';
+import { motion } from 'motion/react';
+import {
+  Search,
+  BookOpen,
+  Calendar,
+  User,
+  ArrowRight,
+  ArrowLeft,
+  Mail,
+  Check,
+  Heart,
+  Sparkles,
+} from 'lucide-react';
+import { JOURNAL_POSTS } from '../data';
+import { JournalPost } from '../types';
+
+export default function JournalView() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [readingPost, setReadingPost] = useState<JournalPost | null>(null);
+
+  // Newsletter subscribe mock state
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const categories = [
+    'All',
+    'Healthy Habits',
+    'Daily Wellness',
+    'Family Wellness Tips',
+    'Nutrition Basics',
+    'Seasonal Wellness',
+    'Everyday Healthy Living',
+  ];
+
+  // Filter posts based on category selection & search term
+  const filteredPosts = JOURNAL_POSTS.filter((post) => {
+    const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const handleSubscribe = (e: FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+    }
+  };
+
+  // Helper to split markdown headings into beautiful TSX blocks
+  const renderContent = (content: string) => {
+    return content.split('\n\n').map((paragraph, index) => {
+      if (paragraph.startsWith('### ')) {
+        return (
+          <h3 key={index} className="font-sans font-bold text-lg sm:text-xl text-navy mt-8 mb-4">
+            {paragraph.replace('### ', '')}
+          </h3>
+        );
+      }
+      if (paragraph.startsWith('## ')) {
+        return (
+          <h2 key={index} className="font-sans font-bold text-xl sm:text-2xl text-navy mt-10 mb-5">
+            {paragraph.replace('## ', '')}
+          </h2>
+        );
+      }
+      if (paragraph.startsWith('- ') || paragraph.startsWith('* ')) {
+        return (
+          <ul key={index} className="list-disc list-inside pl-4 my-4 flex flex-col gap-2">
+            {paragraph.split('\n').map((li, liIdx) => (
+              <li key={liIdx} className="font-sans text-xs sm:text-sm text-navy/70 leading-relaxed">
+                {li.replace(/^[-*]\s+/, '')}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+      return (
+        <p key={index} className="font-sans text-xs sm:text-sm text-navy/70 leading-relaxed mb-4 whitespace-pre-line">
+          {paragraph}
+        </p>
+      );
+    });
+  };
+
+  // 1. INDIVIDUAL ARTICLE VIEW MODE
+  if (readingPost) {
+    return (
+      <div id="journal-read-mode" className="pt-24 pb-20 max-w-3xl mx-auto px-6">
+        {/* Back Button */}
+        <button
+          onClick={() => {
+            setReadingPost(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="inline-flex items-center gap-2 font-sans font-semibold text-xs text-navy/50 hover:text-navy mb-8 cursor-pointer focus:outline-none"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Wellness Journal</span>
+        </button>
+
+        {/* Article Meta */}
+        <div className="flex flex-wrap items-center gap-4 text-xs text-navy/50 mb-4">
+          <span className="bg-emerald/10 text-emerald font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            {readingPost.category}
+          </span>
+          <span className="flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5" />
+            <span>{readingPost.date}</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>{readingPost.readTime}</span>
+          </span>
+        </div>
+
+        {/* Main Title */}
+        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl lg:text-5xl text-navy tracking-tight leading-tight mb-6">
+          {readingPost.title}
+        </h1>
+
+        {/* Author details */}
+        <div className="flex items-center gap-3 border-y border-navy/5 py-4 mb-8">
+          <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy font-sans font-bold text-sm">
+            {readingPost.author.charAt(0)}
+          </div>
+          <div className="text-left">
+            <span className="font-sans font-bold text-xs text-navy block">{readingPost.author}</span>
+            <span className="font-sans text-[10px] text-navy/40 block mt-0.5">Author & Contributor</span>
+          </div>
+        </div>
+
+        {/* Main Body */}
+        <div className="text-left">
+          {renderContent(readingPost.content)}
+        </div>
+
+        {/* CTA box at end of article */}
+        <div className="bg-surface rounded-[24px] p-6 sm:p-8 border border-navy/5 text-left mt-12 flex flex-col sm:flex-row gap-6 items-center justify-between">
+          <div className="max-w-md">
+            <h4 className="font-sans font-bold text-base text-navy flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-emerald" />
+              <span>Support Your Everyday Routine</span>
+            </h4>
+            <p className="font-sans text-xs text-navy/60 mt-2 leading-relaxed">
+              Experience the benefits of premium Elderberry, Vitamin C, Zinc, and Larch prebiotic fiber in one easy daily habit.
+            </p>
+          </div>
+          <a
+            href="https://www.amazon.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto text-center inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-dark text-sky px-6 py-3.5 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
+          >
+            Shop on Amazon
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. MAIN JOURNAL LIST MODE
+  return (
+    <div id="journal-list-mode" className="pt-24 pb-20">
+      {/* Page Header */}
+      <section className="py-16 md:py-24 hero-gradient text-center">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#3AA76D]/10 text-[#3AA76D] mb-6">
+            <Sparkles className="w-4 h-4 text-emerald" />
+            <span className="font-sans font-extrabold text-[11px] uppercase tracking-wide">
+              ImmunoPal Wellness Journal
+            </span>
+          </div>
+          <h1 className="font-sans font-extrabold text-5xl sm:text-7xl lg:text-8xl text-navy tracking-tighter leading-[0.9] mb-6">
+            Healthy Habits for <br />
+            <span className="text-emerald">Everyday Living</span>
+          </h1>
+          <p className="font-sans text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            Explore evidence-supported guides, wellness routine tips, and digestive nutrition basics written to nurture simple habits and everyday vitality.
+          </p>
+        </div>
+      </section>
+
+      {/* Search & Category Filter Section */}
+      <section className="py-10 bg-white">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col gap-6">
+          {/* Search Bar */}
+          <div className="relative max-w-md mx-auto w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40" />
+            <input
+              type="text"
+              placeholder="Search wellness articles..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-5 py-4 rounded-[20px] bg-[#F7F9FC] border border-white shadow-soft font-sans text-sm focus:outline-none focus:border-emerald/40 transition-colors"
+            />
+          </div>
+
+          {/* Category Filter Pills (Horizontal Scroll on Mobile) */}
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 py-2 overflow-x-auto scrollbar-none">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-5 py-2.5 rounded-full font-sans font-extrabold text-[11px] sm:text-xs transition-all whitespace-nowrap cursor-pointer focus:outline-none ${
+                  selectedCategory === cat
+                    ? 'bg-[#123A63] text-white shadow-soft'
+                    : 'bg-[#F7F9FC] text-navy/60 hover:text-navy hover:bg-surface/80'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Articles Grid */}
+      <section className="py-6 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-16 border border-dashed border-navy/10 rounded-3xl">
+              <BookOpen className="w-12 h-12 text-navy/20 mx-auto mb-4" />
+              <h3 className="font-sans font-bold text-lg text-navy mb-1">No Articles Found</h3>
+              <p className="font-sans text-xs text-navy/50 max-w-sm mx-auto">
+                We couldn't find any articles matching your search query. Try switching your category filter or modifying your keywords.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {filteredPosts.map((post) => (
+                <div
+                  key={post.id}
+                  className="bg-[#F7F9FC] rounded-[28px] border border-white overflow-hidden flex flex-col justify-between shadow-soft hover:shadow-md hover:border-emerald-200 transition-all duration-300 group"
+                >
+                  <div className="p-6 text-left">
+                    <span className="inline-block bg-white text-emerald text-[9px] font-extrabold uppercase tracking-wide px-3 py-1 rounded-full border border-navy/5 mb-4 shadow-sm">
+                      {post.category}
+                    </span>
+                    <h3 className="font-sans font-extrabold text-xl text-navy group-hover:text-emerald transition-colors line-clamp-2 mb-3">
+                      {post.title}
+                    </h3>
+                    <p className="font-sans text-sm text-slate-500 leading-relaxed line-clamp-3 mb-6">
+                      {post.excerpt}
+                    </p>
+                  </div>
+
+                  <div className="px-6 pb-6 pt-4 border-t border-navy/5 flex items-center justify-between text-[11px] text-navy/50">
+                    <div className="flex items-center gap-1">
+                      <BookOpen className="w-3.5 h-3.5 text-navy/30" />
+                      <span>{post.readTime}</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setReadingPost(post);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="font-sans font-bold text-navy group-hover:text-emerald transition-colors inline-flex items-center gap-1 cursor-pointer focus:outline-none"
+                    >
+                      <span>Read Article</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-emerald" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Premium Newsletter Sign-up Box */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-white border border-white rounded-[32px] p-8 sm:p-12 flex flex-col md:flex-row gap-8 items-center justify-between shadow-soft">
+            <div className="text-left max-w-md">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#3AA76D]/10 text-[#3AA76D] mb-3">
+                <Heart className="w-3.5 h-3.5 text-emerald animate-pulse" />
+                <span className="font-sans font-extrabold text-[10px] uppercase tracking-wide">Join Our Wellness Circle</span>
+              </div>
+              <h3 className="font-sans font-extrabold text-2xl sm:text-3xl text-navy">
+                Everyday health, direct to your inbox.
+              </h3>
+              <p className="font-sans text-sm text-slate-500 mt-2 leading-relaxed">
+                Receive beautiful, monthly newsletters with clean, science-supported wellness tips, digestive habits guides, and Amazon promotion notifications.
+              </p>
+            </div>
+
+            <div className="w-full md:w-auto shrink-0 min-w-[280px] sm:min-w-[340px]">
+              {subscribed ? (
+                <div className="bg-emerald/5 border border-emerald/20 text-emerald rounded-[20px] p-6 text-center animate-scale-in">
+                  <Check className="w-6 h-6 mx-auto mb-2.5" />
+                  <span className="font-sans font-extrabold text-sm block">Welcome to the Circle!</span>
+                  <span className="text-xs text-navy/60 block mt-1">Thank you for subscribing to our newsletter.</span>
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="flex flex-col gap-2.5">
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-11 pr-5 py-4 rounded-[20px] bg-[#F7F9FC] border border-navy/10 font-sans text-xs focus:outline-none focus:border-emerald/40 shadow-sm"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-[#123A63] hover:bg-opacity-95 text-white font-sans font-extrabold text-sm py-4 rounded-[20px] shadow-soft transition-all"
+                  >
+                    Subscribe Now
+                  </button>
+                  <p className="text-[10px] text-navy/40 text-center leading-normal mt-1">
+                    We respect your privacy. Unsubscribe at any time.
+                  </p>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
