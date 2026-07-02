@@ -1,0 +1,11 @@
+{
+  "name": "immunopal-website",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@google/generative-ai": "^0.1.0"
+  },
+  "scripts": {
+    "build": "echo 'No build step required'"
+  }
+}
